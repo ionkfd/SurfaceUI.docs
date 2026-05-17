@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "id": "surfaceui_imgui_demo",
+  "version": "${version}",
+  "name": "LARP SurfaceUI",
+  "description": "A functional LARP menu built with SurfaceUI widgets, layout, styling, and live status panels.",
+  "authors": ["SurfaceUI contributors"],
+  "license": "MIT",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "dev.surfaceui.demo.ImguiDemoClient"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.18.4",
+    "minecraft": "1.21.11",
+    "java": ">=21",
+    "fabric-api": "*",
+    "surfaceui": ">=0.1.0"
+  }
+}

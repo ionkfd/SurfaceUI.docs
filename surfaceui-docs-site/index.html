@@ -1,0 +1,525 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SurfaceUI Documentation</title>
+    <meta name="description" content="Complete documentation for SurfaceUI, a Fabric Minecraft Java HUD and GUI rendering framework.">
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="#overview" aria-label="SurfaceUI home">
+        <span class="brand-mark">S</span>
+        <span>
+          <strong>SurfaceUI</strong>
+          <small>Minecraft-native UI framework</small>
+        </span>
+      </a>
+      <label class="search" aria-label="Search documentation">
+        <span>Search</span>
+        <input id="doc-search" type="search" placeholder="Search classes, APIs, widgets, examples">
+      </label>
+      <nav class="top-links" aria-label="Top navigation">
+        <a href="#quickstart">Quickstart</a>
+        <a href="#api">API</a>
+        <a href="#examples">Examples</a>
+      </nav>
+    </header>
+
+    <div class="shell">
+      <aside class="sidebar" aria-label="Documentation navigation">
+        <div class="sidebar-heading">SurfaceUI Docs</div>
+        <a href="#overview">Overview</a>
+        <a href="#install">Install</a>
+        <a href="#architecture">Architecture</a>
+        <a href="#packages">Packages</a>
+        <a href="#quickstart">Quickstart</a>
+        <a href="#facade">Public Facade</a>
+        <a href="#surfaces">Surfaces</a>
+        <a href="#widgets">Widgets</a>
+        <a href="#style">Style System</a>
+        <a href="#render">Renderer</a>
+        <a href="#layout">Layout</a>
+        <a href="#input">Input</a>
+        <a href="#config">Config</a>
+        <a href="#editor">HUD Editor</a>
+        <a href="#fabric">Fabric Integration</a>
+        <a href="#api">API Reference</a>
+        <a href="#examples">Examples</a>
+        <a href="#patterns">Patterns</a>
+        <a href="#performance">Performance</a>
+        <a href="#limits">Limits</a>
+      </aside>
+
+      <main class="content">
+        <section id="overview" class="hero doc-section" data-search="overview surfaceui minecraft fabric hud gui renderer layout widgets style input">
+          <div>
+            <p class="eyebrow">Fabric client library for Minecraft Java 1.21.11</p>
+            <h1>Build modern Minecraft HUDs and GUI screens with a real UI framework.</h1>
+            <p class="lede">SurfaceUI combines a custom 2D renderer, layout engine, theme system, widget model, and input pipeline. It is inspired by the ergonomics of web UI, but it is not HTML, not browser CSS, and not a DOM.</p>
+            <div class="hero-actions">
+              <a class="button primary" href="#quickstart">Start building</a>
+              <a class="button" href="#api">Browse API</a>
+            </div>
+          </div>
+          <div class="preview" aria-label="SurfaceUI preview">
+            <div class="mock-window">
+              <div class="mock-title">LARP</div>
+              <div class="mock-body">
+                <div class="mock-sidebar">
+                  <span class="active">Dungeon</span>
+                  <span>Slayer</span>
+                  <span>Mining</span>
+                </div>
+                <div class="mock-main">
+                  <div class="mock-card on">
+                    <b>Auto Yang Glyph</b>
+                    <i></i>
+                    <em style="width:74%"></em>
+                  </div>
+                  <div class="mock-card">
+                    <b>Silent Chest</b>
+                    <i></i>
+                    <em style="width:54%"></em>
+                  </div>
+                </div>
+                <div class="mock-stats">
+                  <b>SESSION STATS</b>
+                  <span>FPS 118</span>
+                  <span>Ping Local</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="install" class="doc-section" data-search="install gradle fabric loom yarn dependency modImplementation modRuntimeOnly">
+          <div class="section-title">
+            <p class="eyebrow">Install</p>
+            <h2>Use SurfaceUI as a Fabric library mod</h2>
+          </div>
+          <div class="two-col">
+            <div>
+              <p>SurfaceUI is distributed as a normal Fabric mod jar. Other Fabric mods depend on it at runtime and call the public facade from their client initializer.</p>
+              <ul class="check-list">
+                <li>Target: Minecraft Java 1.21.11</li>
+                <li>Runtime: Fabric Loader and Fabric API</li>
+                <li>Mappings: Yarn-named classes and methods</li>
+                <li>Language: Java 21</li>
+                <li>Side: client-only rendering and input code stays isolated</li>
+              </ul>
+            </div>
+            <pre><code class="language-gradle">dependencies {
+    modImplementation "dev.surfaceui:surfaceui:0.1.0"
+}
+
+// In fabric.mod.json
+"depends": {
+  "surfaceui": ">=0.1.0"
+}</code></pre>
+          </div>
+        </section>
+
+        <section id="architecture" class="doc-section" data-search="architecture renderer style layout widget input runtime config layers">
+          <div class="section-title">
+            <p class="eyebrow">Architecture</p>
+            <h2>Layered by responsibility</h2>
+          </div>
+          <div class="card-grid">
+            <article>
+              <h3>Renderer Layer</h3>
+              <p>Owns drawing primitives: rounded rectangles, outlines, gradients, text, images, shadows, and clipping. Widgets call <code>SurfaceCanvas</code>, not raw vanilla rectangles.</p>
+            </article>
+            <article>
+              <h3>Style Layer</h3>
+              <p>Defines immutable style values and reusable theme tokens for colors, spacing, borders, radii, opacity, text, and fonts.</p>
+            </article>
+            <article>
+              <h3>Layout Layer</h3>
+              <p>Resolves anchor placement, fixed size, auto size, percent size, padding, gap, row, column, stack, min/max, z index, and clipping rectangles.</p>
+            </article>
+            <article>
+              <h3>Widget Layer</h3>
+              <p>Defines reusable components with ids, bounds, children, style, input traits, render hooks, and event handlers.</p>
+            </article>
+            <article>
+              <h3>Input Layer</h3>
+              <p>Routes mouse move, click, release, drag, focus, hover, and keyboard input to the correct widget, including drag capture.</p>
+            </article>
+            <article>
+              <h3>Runtime Layer</h3>
+              <p>Coordinates registries, config overrides, style resolution, layout, z sorting, input, rendering, and active mode.</p>
+            </article>
+          </div>
+        </section>
+
+        <section id="packages" class="doc-section" data-search="packages dev.surfaceui api render runtime layout style widget input config client demo">
+          <div class="section-title">
+            <p class="eyebrow">Package Map</p>
+            <h2>Where code belongs</h2>
+          </div>
+          <div class="feature-table">
+            <div><b>dev.surfaceui.api</b><span>Public entry points, surface kinds, modes, and developer-facing interfaces.</span></div>
+            <div><b>dev.surfaceui.api.widget</b><span>Widget types and <code>Widgets</code> factory helpers.</span></div>
+            <div><b>dev.surfaceui.api.style</b><span><code>Style</code>, <code>Paint</code>, <code>Theme</code>, <code>Radius</code>, <code>Border</code>, <code>Shadow</code>, and spacing values.</span></div>
+            <div><b>dev.surfaceui.api.layout</b><span><code>Anchor</code>, <code>Align</code>, <code>LayoutRect</code>, size specs, and axis types.</span></div>
+            <div><b>dev.surfaceui.render</b><span><code>SurfaceCanvas</code>, DrawContext backend, font renderer abstraction, measurements, and low-level primitives.</span></div>
+            <div><b>dev.surfaceui.runtime</b><span>Registries, pipelines, layout engine, renderer, sorter, state store, and frame context.</span></div>
+            <div><b>dev.surfaceui.config</b><span>JSON config, widget overrides, load, save, reset, lock, visibility, position, and size.</span></div>
+            <div><b>dev.surfaceui.client</b><span>Fabric client entrypoint, HUD hook registration, editor screen, and client-only integration.</span></div>
+          </div>
+        </section>
+
+        <section id="quickstart" class="doc-section" data-search="quickstart register hud widget text box row column style">
+          <div class="section-title">
+            <p class="eyebrow">Quickstart</p>
+            <h2>Register your first HUD widget</h2>
+          </div>
+          <p>Call the API from your mod's <code>ClientModInitializer</code>. Each provider returns a widget tree for the current frame, so text and progress values can be dynamic.</p>
+          <pre><code class="language-java">public final class ExampleClient implements ClientModInitializer {
+    @Override
+    public void onInitializeClient() {
+        HudGui ui = HudGuiLibrary.api();
+
+        ui.registerHud(Identifier.of("example", "clock"), ctx ->
+            Widgets.row()
+                .id("example:clock")
+                .anchor(Anchor.TOP_LEFT)
+                .offset(8, 8)
+                .style(Style.create()
+                    .padding(6)
+                    .gap(5)
+                    .radius(5)
+                    .background(Paint.argb(0xCC101219))
+                    .border(1, Paint.argb(0x66363B48))
+                    .color(Paint.argb(0xFFE8ECF4))
+                    .build())
+                .add(Widgets.text("Day"))
+                .add(Widgets.text(() -> Long.toString(day()))));
+    }
+}</code></pre>
+        </section>
+
+        <section id="facade" class="doc-section" data-search="facade hudgui hudguiapi hudguilibrary register open screen popup themes styles">
+          <div class="section-title">
+            <p class="eyebrow">Public Facade</p>
+            <h2>The API other mods use</h2>
+          </div>
+          <div class="api-list">
+            <article>
+              <h3>HudGuiLibrary</h3>
+              <p><code>HudGuiLibrary.api()</code> returns the singleton facade. <code>HudGuiLibrary.runtime()</code> exposes runtime services for advanced integrations.</p>
+            </article>
+            <article>
+              <h3>HudGui</h3>
+              <p>Registers HUD widgets, overlays, popup factories, screens, themes, and shared styles.</p>
+            </article>
+            <article>
+              <h3>HudGuiApi</h3>
+              <p>The concrete implementation delegates to <code>HudGuiRuntime</code> and keeps the public API small.</p>
+            </article>
+          </div>
+          <pre><code class="language-java">HudGui api = HudGuiLibrary.api();
+api.registerTheme(myTheme);
+api.registerStyle(Identifier.of("example", "panel"), panelStyle);
+api.registerOverlay(Identifier.of("example", "warning"), 100, ctx -> warningOverlay());
+api.registerPopup(Identifier.of("example", "toast"), ctx -> toastPopup());
+api.openScreen(() -> new MySurfaceScreen());</code></pre>
+        </section>
+
+        <section id="surfaces" class="doc-section" data-search="surfaces hud overlay popup screen play mode edit mode screen mode">
+          <div class="section-title">
+            <p class="eyebrow">Surfaces</p>
+            <h2>Places where widgets render</h2>
+          </div>
+          <div class="feature-table">
+            <div><b>HUD</b><span>Frame-driven in-game widgets. Usually no input in play mode, editable in HUD edit mode.</span></div>
+            <div><b>Overlay</b><span>Temporary or persistent layers above the HUD, sorted by z index.</span></div>
+            <div><b>Popup</b><span>Factory-created transient UI, such as toasts, menus, confirmations, and warnings.</span></div>
+            <div><b>Screen</b><span>A Minecraft <code>Screen</code> subclass using SurfaceUI layout, rendering, and input.</span></div>
+            <div><b>PLAY_MODE</b><span>Render-only HUD mode for normal gameplay.</span></div>
+            <div><b>HUD_EDIT_MODE</b><span>Selection, drag, resize, snap, inspector, and config saving.</span></div>
+            <div><b>SCREEN_MODE</b><span>Mouse and keyboard captured like a normal Minecraft GUI screen.</span></div>
+          </div>
+        </section>
+
+        <section id="widgets" class="doc-section" data-search="widgets text box image icon progress stack row column spacer info custom button checkbox slider dropdown">
+          <div class="section-title">
+            <p class="eyebrow">Widgets</p>
+            <h2>Reusable building blocks</h2>
+          </div>
+          <div class="feature-table">
+            <div><b>TextWidget</b><span>Dynamic or static text measured by the active font renderer.</span></div>
+            <div><b>BoxWidget</b><span>Styled rectangle or visual block.</span></div>
+            <div><b>ImageWidget</b><span>Minecraft resource texture rendering.</span></div>
+            <div><b>IconWidget</b><span>Small texture icon with explicit bounds.</span></div>
+            <div><b>ProgressBarWidget</b><span>Value-driven horizontal fill.</span></div>
+            <div><b>ButtonWidget</b><span>Hover, press, release-inside click behavior.</span></div>
+            <div><b>CheckboxWidget</b><span>Boolean setting with a label and setter.</span></div>
+            <div><b>SliderWidget</b><span>Numeric setting with drag capture and clamped values.</span></div>
+            <div><b>DropdownWidget</b><span>Openable list of choices.</span></div>
+            <div><b>RowWidget</b><span>Horizontal flow container.</span></div>
+            <div><b>ColumnWidget</b><span>Vertical flow container.</span></div>
+            <div><b>StackWidget</b><span>Layered container for overlays, scroll content, and absolute children.</span></div>
+            <div><b>SpacerWidget</b><span>Explicit blank space in layouts.</span></div>
+            <div><b>InfoHudWidget</b><span>Small title/value HUD pattern.</span></div>
+            <div><b>CustomRenderWidget</b><span>Escape hatch for custom primitives while keeping layout and input.</span></div>
+          </div>
+        </section>
+
+        <section id="style" class="doc-section" data-search="style theme paint radius border shadow padding margin gap opacity font align custom font">
+          <div class="section-title">
+            <p class="eyebrow">Style System</p>
+            <h2>Explicit, immutable, predictable</h2>
+          </div>
+          <p>SurfaceUI styles are Java value objects. They are not browser CSS. There are no selectors, cascade rules, inherited surprises, or layout side effects. Themes provide defaults, and widgets override what they need.</p>
+          <div class="tokens">
+            <span style="--swatch:#0f1016">windowBackground</span>
+            <span style="--swatch:#171a22">panelBackground</span>
+            <span style="--swatch:#ffb52c">accentColor</span>
+            <span style="--swatch:#252a36">borderColor</span>
+            <span style="--swatch:#f1f3f7">textColor</span>
+          </div>
+          <pre><code class="language-java">Style panel = Style.create()
+    .background(Paint.argb(0xEE111219))
+    .border(1, Paint.argb(0x55363B48))
+    .radius(8)
+    .padding(10)
+    .gap(6)
+    .fontSize(9)
+    .color(Paint.argb(0xFFE8ECF4))
+    .build();</code></pre>
+          <div class="feature-table">
+            <div><b>Spacing</b><span><code>padding</code>, <code>margin</code>, and <code>gap</code>.</span></div>
+            <div><b>Shape</b><span><code>radius</code>, border width, and border paint.</span></div>
+            <div><b>Paint</b><span>Background, gradient, opacity, text color, glow, and shadow.</span></div>
+            <div><b>Typography</b><span>Font size, custom font identifier, horizontal and vertical alignment.</span></div>
+            <div><b>Sizing</b><span>Width, height, min size, max size, auto, and percent values.</span></div>
+          </div>
+        </section>
+
+        <section id="render" class="doc-section" data-search="renderer surfacecanvas drawcontext rounded rect outline gradient text scissor shadow image font">
+          <div class="section-title">
+            <p class="eyebrow">Renderer</p>
+            <h2>Custom 2D primitives over DrawContext</h2>
+          </div>
+          <p>Widgets should render through <code>SurfaceCanvas</code>. Vanilla rectangle helpers are isolated inside the backend where needed. This keeps all widgets using the same primitives and allows the renderer to improve without rewriting widgets.</p>
+          <pre><code class="language-java">SurfaceCanvas canvas = new DrawContextSurfaceCanvas(context);
+canvas.pushScissor(clip);
+canvas.drawRoundedRect(rect, Radius.all(8), Paint.argb(0xEE111219), 1.0F);
+canvas.drawRoundedOutline(rect, Radius.all(8), 1, Paint.argb(0x55363B48), 1.0F);
+canvas.drawText("Ready", rect.x() + 8, rect.y() + 6, textStyle);
+canvas.popScissor();</code></pre>
+          <div class="feature-table">
+            <div><b>drawRect</b><span>Flat filled rectangle for simple fills and rules.</span></div>
+            <div><b>drawRoundedRect</b><span>Rounded mesh or backend primitive with real radius values.</span></div>
+            <div><b>drawRoundedOutline</b><span>Subtle border around rounded shapes.</span></div>
+            <div><b>drawGradientRect</b><span>Gradient primitive for themes that use it.</span></div>
+            <div><b>drawText</b><span>Font renderer abstraction with measurement support.</span></div>
+            <div><b>pushScissor</b><span>Clip children so scroll and panels do not bleed.</span></div>
+          </div>
+        </section>
+
+        <section id="layout" class="doc-section" data-search="layout anchor row column stack fixed auto percent min max z index clipping scroll">
+          <div class="section-title">
+            <p class="eyebrow">Layout</p>
+            <h2>Measured bounds first, rendering second</h2>
+          </div>
+          <ol class="timeline">
+            <li><b>Measure</b><span>Each widget computes a preferred size from content, style, and explicit size specs.</span></li>
+            <li><b>Place</b><span>Root widgets use anchors and offsets. Flow containers place children in rows or columns.</span></li>
+            <li><b>Clip</b><span>Every resolved widget carries a clip rectangle created from parent content and child bounds.</span></li>
+            <li><b>Sort</b><span>Z index determines final render order.</span></li>
+          </ol>
+          <pre><code class="language-java">Widgets.stack()
+    .id("example:scroll_view")
+    .size(260, 160)
+    .style(Style.create().padding(0).build())
+    .add(Widgets.column()
+        .id("example:scroll_content")
+        .offset(0, -scrollOffset)
+        .size(248, contentHeight)
+        .style(Style.create().gap(5).build()));</code></pre>
+        </section>
+
+        <section id="input" class="doc-section" data-search="input hover pressed focus click release drag slider keyboard event propagation">
+          <div class="section-title">
+            <p class="eyebrow">Input</p>
+            <h2>Events route to the correct widget</h2>
+          </div>
+          <div class="feature-table">
+            <div><b>contains</b><span>Hit testing uses widget bounds plus clipping.</span></div>
+            <div><b>hovered</b><span>Updated on mouse move and stored by widget id.</span></div>
+            <div><b>pressed</b><span>Set on mouse down, cleared on release.</span></div>
+            <div><b>focus</b><span>Focusable widgets receive keyboard events.</span></div>
+            <div><b>drag capture</b><span>Sliders continue dragging after the cursor leaves the original bounds.</span></div>
+            <div><b>click contract</b><span>Buttons trigger on release inside after a valid press.</span></div>
+          </div>
+        </section>
+
+        <section id="config" class="doc-section" data-search="config json fabric config directory overrides widget override save load reset locked visible">
+          <div class="section-title">
+            <p class="eyebrow">Config</p>
+            <h2>User edits are small JSON overrides</h2>
+          </div>
+          <p>SurfaceUI stores user-edited widget state under the Fabric config directory. Widget definitions remain code-owned; config only overrides anchor, x, y, width, height, visibility, and lock state.</p>
+          <pre><code class="language-json">{
+  "overrides": {
+    "example:mana_bar": {
+      "widgetId": "example:mana_bar",
+      "anchor": "TOP_RIGHT",
+      "x": -12,
+      "y": 12,
+      "width": 120,
+      "height": 34,
+      "visible": true,
+      "locked": false
+    }
+  }
+}</code></pre>
+        </section>
+
+        <section id="editor" class="doc-section" data-search="hud editor screen selection outline drag resize handle snap grid inspector reset">
+          <div class="section-title">
+            <p class="eyebrow">HUD Editor</p>
+            <h2>Interactive editing for HUD widgets</h2>
+          </div>
+          <p>The editor is a client screen that renders the same HUD widgets in <code>HUD_EDIT_MODE</code>. Editable widgets can be selected, moved, resized, snapped to grid, inspected, reset, and saved.</p>
+          <div class="callout">
+            <b>Editor behavior</b>
+            <span>Selection outlines and resize handles are rendered over widgets. Dragging writes a <code>WidgetOverride</code>. Releasing the mouse saves JSON. The reset button removes the override and returns to code defaults.</span>
+          </div>
+        </section>
+
+        <section id="fabric" class="doc-section" data-search="fabric client entrypoint hud rendering hooks events drawcontext screen yarn mixins">
+          <div class="section-title">
+            <p class="eyebrow">Fabric Integration</p>
+            <h2>Client-only by design</h2>
+          </div>
+          <div class="feature-table">
+            <div><b>Client entrypoint</b><span>Initializes the runtime and registers client hooks.</span></div>
+            <div><b>HUD rendering</b><span>Uses Fabric HUD rendering events to draw SurfaceUI HUD and overlay surfaces.</span></div>
+            <div><b>DrawContext</b><span>The low-level backend receives Minecraft's active <code>DrawContext</code>.</span></div>
+            <div><b>Screen subclasses</b><span>Full GUI screens are regular Minecraft <code>Screen</code> implementations.</span></div>
+            <div><b>Yarn names</b><span>Code uses Yarn-named Minecraft classes and methods.</span></div>
+            <div><b>Mixins</b><span>Avoided for core UI. Use only for optional integration points that Fabric events cannot expose.</span></div>
+          </div>
+        </section>
+
+        <section id="api" class="doc-section" data-search="api reference classes methods hudgui runtime registry renderpipeline inputpipeline zindexsorter">
+          <div class="section-title">
+            <p class="eyebrow">API Reference</p>
+            <h2>Core classes and responsibilities</h2>
+          </div>
+          <div class="api-list">
+            <article><h3>HudGuiRuntime</h3><p>Owns registries, theme state, config manager, render pipeline, input pipeline, and active mode.</p></article>
+            <article><h3>SurfaceRegistry</h3><p>Stores HUD, overlay, popup, and screen providers by identifier.</p></article>
+            <article><h3>WidgetRegistry</h3><p>Stores reusable widget factories and shared widget definitions.</p></article>
+            <article><h3>RenderPipeline</h3><p>Collects widgets, resolves styles, applies config, lays out, sorts, and renders.</p></article>
+            <article><h3>InputPipeline</h3><p>Tracks hover, focus, press, drag, resize, selection, and keyboard routing.</p></article>
+            <article><h3>ZIndexSorter</h3><p>Orders resolved widgets so overlays and popups draw predictably.</p></article>
+            <article><h3>LayoutEngine</h3><p>Converts widget trees into resolved rectangles and clips.</p></article>
+            <article><h3>SurfaceRenderer</h3><p>Draws resolved widgets through <code>SurfaceCanvas</code>.</p></article>
+            <article><h3>ConfigManager</h3><p>Loads, saves, updates, and resets user widget overrides.</p></article>
+          </div>
+        </section>
+
+        <section id="examples" class="doc-section" data-search="examples hud draggable resizable screen popup overlay info hud custom render">
+          <div class="section-title">
+            <p class="eyebrow">Examples</p>
+            <h2>Copyable patterns</h2>
+          </div>
+          <div class="tabs" data-tabs>
+            <div class="tab-buttons" role="tablist" aria-label="Example snippets">
+              <button class="active" data-tab="hud" type="button">HUD</button>
+              <button data-tab="editable" type="button">Editable HUD</button>
+              <button data-tab="screen" type="button">Screen</button>
+              <button data-tab="popup" type="button">Popup</button>
+              <button data-tab="custom" type="button">Custom Render</button>
+            </div>
+            <pre class="tab-panel active" data-panel="hud"><code class="language-java">api.registerHud(Identifier.of("example", "fps"), ctx ->
+    Widgets.text(() -> MinecraftClient.getInstance().getCurrentFps() + " FPS")
+        .id("example:fps")
+        .anchor(Anchor.TOP_RIGHT)
+        .offset(-8, 8));</code></pre>
+            <pre class="tab-panel" data-panel="editable"><code class="language-java">Widgets.column()
+    .id("example:resources")
+    .anchor(Anchor.BOTTOM_LEFT)
+    .offset(8, -8)
+    .size(132, 40)
+    .draggable()
+    .resizable()
+    .add(Widgets.text("Mana"))
+    .add(Widgets.bar(() -> mana() / maxMana()).size(120, 8));</code></pre>
+            <pre class="tab-panel" data-panel="screen"><code class="language-java">public final class ExampleScreen extends Screen {
+    private final LayoutEngine layout = new LayoutEngine();
+    private final SurfaceRenderer renderer = new SurfaceRenderer();
+
+    public ExampleScreen() {
+        super(Text.literal("Example"));
+    }
+}</code></pre>
+            <pre class="tab-panel" data-panel="popup"><code class="language-java">api.registerPopup(Identifier.of("example", "toast"), ctx ->
+    Widgets.row()
+        .id("example:toast")
+        .anchor(Anchor.BOTTOM_CENTER)
+        .offset(0, -28)
+        .add(Widgets.text("Objective updated")));</code></pre>
+            <pre class="tab-panel" data-panel="custom"><code class="language-java">Widgets.custom((context, tick, rect, style) -> {
+    SurfaceCanvas canvas = new DrawContextSurfaceCanvas(context);
+    canvas.drawRoundedRect(rect, Radius.all(8), style.tone(), style.opacity());
+    canvas.drawRoundedOutline(rect, Radius.all(8), 1, style.stroke().paint(), 1.0F);
+});</code></pre>
+          </div>
+        </section>
+
+        <section id="patterns" class="doc-section" data-search="patterns theme reusable styles modules settings state scroll clipping responsive">
+          <div class="section-title">
+            <p class="eyebrow">Patterns</p>
+            <h2>Recommended ways to build real interfaces</h2>
+          </div>
+          <ul class="check-list">
+            <li>Keep gameplay/module state outside widgets. Widgets read and write state through suppliers and setters.</li>
+            <li>Use stable widget ids for anything the user can edit or persist.</li>
+            <li>Use rows and columns for most layout, stacks for overlays and scrollable content.</li>
+            <li>Let theme values define repeated color, radius, padding, gap, and text sizes.</li>
+            <li>Use <code>CustomRenderWidget</code> only for new primitives or special visuals, not for entire screens.</li>
+            <li>Use parent clipping for scroll areas, dropdowns, and panels that must not bleed.</li>
+          </ul>
+        </section>
+
+        <section id="performance" class="doc-section" data-search="performance predictable fast render plans allocations measurements">
+          <div class="section-title">
+            <p class="eyebrow">Performance</p>
+            <h2>Fast enough for every frame</h2>
+          </div>
+          <div class="feature-table">
+            <div><b>Predictable passes</b><span>Collect, style, config, layout, input, render.</span></div>
+            <div><b>Small objects</b><span>Resolved widget records are lightweight and frame-scoped.</span></div>
+            <div><b>Text measurement</b><span>Text size is measured through the font abstraction and can be cached by the backend.</span></div>
+            <div><b>Clipping</b><span>Scissor rectangles prevent expensive overdraw in scroll areas.</span></div>
+            <div><b>No DOM</b><span>There is no browser-like tree diffing or selector matching.</span></div>
+          </div>
+        </section>
+
+        <section id="limits" class="doc-section" data-search="limits limitations no css no html no dom no web no selectors">
+          <div class="section-title">
+            <p class="eyebrow">Limits</p>
+            <h2>Intentional boundaries</h2>
+          </div>
+          <ul class="check-list">
+            <li>SurfaceUI does not implement browser CSS, selectors, HTML, or a DOM.</li>
+            <li>SurfaceUI does not use vanilla button widgets or vanilla rectangle rendering as the public widget renderer.</li>
+            <li>Mixins are not required for the core framework.</li>
+            <li>Advanced text shaping and full international typography are future renderer work.</li>
+            <li>Very complex screens should split state, widgets, and render helpers into separate classes.</li>
+          </ul>
+        </section>
+      </main>
+    </div>
+
+    <button class="to-top" type="button" aria-label="Back to top">Top</button>
+    <script src="./script.js"></script>
+  </body>
+</html>

@@ -1,0 +1,13 @@
+.tools/
+**/build/
+**/.gradle/
+.gradle/
+.idea/
+.vscode/
+*.class
+*.jar
+*.log
+*.tmp
+*.zip
+*.7z
+*.7z.exe

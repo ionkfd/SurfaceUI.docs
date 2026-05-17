@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "id": "surfaceui",
+  "version": "${version}",
+  "name": "SurfaceUI",
+  "description": "A client-side Fabric HUD and GUI API with Minecraft-native declarative layout and styling.",
+  "authors": ["SurfaceUI contributors"],
+  "contact": {},
+  "license": "MIT",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "dev.surfaceui.client.SurfaceUiClient"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.18.4",
+    "minecraft": "1.21.11",
+    "java": ">=21",
+    "fabric-api": "*"
+  }
+}
